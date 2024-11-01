@@ -9,12 +9,12 @@ import os
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 
-genai.configure(api_key="AIzaSyAxBnqVMdOQmeNiT2aLKd8ONcsEn83KMG8")
+genai.configure(api_key="API_KEY1")
 model = genai.GenerativeModel(model_name="gemini-1.5-pro")
 
 
 
-auth="7aaU5Yo99_VFnL3KfRmNJxHGqCDMmx1Ab1CtEJwHwPAmDiwwRxFcb8hkxKZ3pgt_"
+auth="API_KEY2"
 
 def split_and_encode_audio(video_path, segment_length=20):
   """Divides audio from a video into segments, returns base64 encoded strings in a list.
