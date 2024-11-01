@@ -1,0 +1,185 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Crime Portal</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .glassmorphisms {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 50px auto;
+            max-width: 800px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .glassmorphisms-container {
+            padding: 15px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .fraud-fields, .suspect-fields {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="glassmorphisms">
+        <div class="glassmorphisms-container">
+            <h1>Create a Complaint</h1>
+            <form method="post" enctype="multipart/form-data" id="complainForm" action="{% url 'upload_complain' %}">
+                {% csrf_token %}
+
+                <!-- Submission Option -->
+                <div class="form-group">
+                    <label>How would you like to submit the complaint?</label><br>
+                    <input type="radio" id="upload_video" name="upload_choice" value="video" onclick="toggleForm('video')">
+                    <label for="upload_video">Upload Video (Hindi)</label><br>
+                    <input type="radio" id="fill_manual" name="upload_choice" value="manual" onclick="toggleForm('manual')">
+                    <label for="fill_manual">Fill Details Manually</label>
+                </div>
+
+                <!-- Video Upload Section -->
+                <div id="video_upload_section" class="form-group" style="display:none;">
+                    <label for="video">Upload Video:</label>
+                    <input type="file" class="form-control-file" name="video" id="video" accept="video/*" required>
+                    <small>Please upload a video in Hindi for transcription.</small>
+                    <div class="form-group">
+                        <label for="addon">Additional Information:</label>
+                        <input type="text" class="form-control" name="addon" placeholder="Additional details">
+                    </div>
+                </div>
+
+                <!-- Manual Form Section -->
+                <div id="manual_form_section" style="display:none;">
+                    <div class="form-group">
+                        <label for="issue_description">Issue Description:</label>
+                        {{ form.issue_description }}
+                    </div>
+                    
+                    
+                </div>
+                <div class="form-group">
+                    <label for="incident_datetime">Incident Date & Time:</label>
+                    {{ form.incident_datetime }}
+                </div>
+                <div class="form-group">
+                        <label for="national_id">National ID:</label>
+                        {{ form.national_id }}
+                    </div>
+
+                <!-- Financial Fraud Checkbox -->
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="video_financial_fraud" onclick="toggleFinancialFraud()"> Financial Fraud?
+                    </label>
+                </div>
+
+                <!-- Financial Fraud Fields -->
+                <div class="fraud-fields">
+                    <div class="form-group">
+                        <label for="bank_name">Bank/Wallet/Merchant:</label>
+                        {{ form.bank_name }}
+                    </div>
+                    <div class="form-group">
+                        <label for="transaction_id">Transaction ID/UTR No.:</label>
+                        {{ form.transaction_id }}
+                    </div>
+                    <div class="form-group">
+                        <label for="transaction_date">Date of Transaction:</label>
+                        {{ form.transaction_date }}
+                    </div>
+                    <div class="form-group">
+                        <label for="fraud_amount">Fraud Amount:</label>
+                        {{ form.fraud_amount }}
+                    </div>
+                </div>
+
+                <!-- Suspect Known Checkbox -->
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="video_suspect_known" onclick="toggleSuspectDetails()"> Suspect Known?
+                    </label>
+                </div>
+
+                <!-- Suspect Details Fields -->
+                <div class="suspect-fields">
+                    <div class="form-group">
+                        <label for="suspect_website_urls">Suspected Website URLs / Social Media Handles:</label>
+                        {{ form.suspect_website_urls }}
+                    </div>
+                    <div class="form-group">
+                        <label for="suspect_mobile_no">Suspect Mobile No.:</label>
+                        {{ form.suspect_mobile_no }}
+                    </div>
+                    <div class="form-group">
+                        <label for="suspect_email">Suspect Email:</label>
+                        {{ form.suspect_email }}
+                    </div>
+                    <div class="form-group">
+                        <label for="suspect_bank_account_no">Suspect Bank Account No.:</label>
+                        {{ form.suspect_bank_account_no }}
+                    </div>
+                    <div class="form-group">
+                        <label for="suspect_address">Suspect Address:</label>
+                        {{ form.suspect_address }}
+                    </div>
+                    <div class="form-group">
+                        <label for="suspect_photo">Suspect Photo (JPEG, JPG, PNG; Max 5MB):</label>
+                        {{ form.suspect_photo }}
+                    </div>
+                    <div class="form-group">
+                        <label for="suspect_other_document">Other Identifying Document:</label>
+                        {{ form.suspect_other_document }}
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">Submit Complaint</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleForm(option) {
+        const isVideo = option === 'video';
+
+            document.getElementById("video_upload_section").style.display = option === 'video' ? 'block' : 'none';
+            document.getElementById("manual_form_section").style.display = option === 'manual' ? 'block' : 'none';
+            document.getElementById("video").required = option === 'video';
+                // Set required fields conditionally
+            document.getElementById("video").required = isVideo;
+            document.querySelector("[name='issue_description']").required = !isVideo;
+            document.querySelector("[name='issue_description']").value='NONE';
+            
+        }
+
+
+        function toggleFinancialFraud() {
+            const fraudFields = document.querySelector('.fraud-fields');
+            fraudFields.style.display = document.getElementById("video_financial_fraud").checked ? 'block' : 'none';
+        }
+
+        function toggleSuspectDetails() {
+            const suspectFields = document.querySelector('.suspect-fields');
+            suspectFields.style.display = document.getElementById("video_suspect_known").checked ? 'block' : 'none';
+        }
+
+    </script>
+</body>
+</html>

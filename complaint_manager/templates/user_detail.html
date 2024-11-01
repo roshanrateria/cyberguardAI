@@ -1,0 +1,34 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details</title>
+</head>
+<body>
+    <h1>User Details</h1>
+    <div class="user-info">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <!-- Add more user fields as needed -->
+    </div>
+    <h2>Complaints by {{ user.username }}</h2>
+    <ol>
+        {% for complaint in complaints %}
+            <li onclick="location.href='{% url 'complain_detail' complaint.id %}'" style="cursor:pointer;">
+                <div class="glass-card">
+                    <span style="color: {% if complaint.priority == 'High' %}red{% elif complaint.priority == 'Medium' %}orange{% else %}green{% endif %}">
+                        {{ complaint.category }} ({{ complaint.priority }})
+                    </span>
+                    <span><b>{{ complaint.issue_description }}</b></span>
+                </div>
+            </li>
+        {% empty %}
+            <p>No complaints found.</p>
+        {% endfor %}
+    </ol>
+</body>
+</html>

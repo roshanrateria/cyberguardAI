@@ -1,0 +1,103 @@
+{%load static%}
+{% load width_ratio %}
+   
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Crime Portal</title>
+    <style>
+        /* Added styles for glass card effect */
+        .glass-card {
+            background-color: rgba(255,255,255, 0.5);
+            box-shadow: 10px 5px 50px black;
+            padding: 2em;
+            margin-top: 10%;
+            border-radius: 10px;
+            width: 100%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+
+
+    <h1 style="color:white">Complaint List</h1>
+    <ol style="color:white">
+    {% for complain in complains %}
+        <li style="padding:2px;margin:2px;" onclick="location.href = '{%url 'complain_detail' complain.id %}';">
+            <div class="glass-card">
+                <span style="color: {% if complain.priority == 'High' %}red{% elif complain.priority == 'Medium' %}orange{% else %}green{% endif %}">{{ complain.category }} ({{ complain.priority }})</span>
+                <span style="color:black"><b>{{ complain.issue_description }}</b></span>
+                <span style="display:inline">
+                    <!-- Donut chart for confidence score -->
+                    <canvas id="chart-{{ forloop.counter }}" width="20" height="20" style="display:inline"></canvas>
+                    {{ complain.confidence_score }}
+                </span>
+            </div>
+        </li>
+    {% endfor %}
+</ol>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+function createDonutChart(value, canvasElementId) {
+    // Get the canvas element
+    const ctx = document.getElementById(canvasElementId).getContext('2d');
+    value=value*100;
+    // Calculate percentage
+    const percentage = Math.min(Math.max(value, 0), 100); // Ensures value is between 0 and 100
+
+    // Define color based on value range
+    let color;
+    if (percentage >= 70) {
+        color = '#32CD32'; // Green for high values
+    } else if (percentage >= 40) {
+        color = '#FFFF00'; // Yellow for medium values
+    } else {
+        color = '#FF0000'; // Red for low values
+    }
+
+    // Create the chart
+    const myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Data', 'Remaining'],
+            datasets: [{
+                label: 'Value',
+                data: [percentage, 100 - percentage],
+                backgroundColor: [color, '#e9ecef'], // Light grey for remaining
+                borderWidth: 1
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: false // Hide the legend
+                }
+            },
+            responsive: false, // Disable responsiveness
+            maintainAspectRatio: false, // Prevent aspect ratio distortion
+            layout: {
+                padding: 0 // Remove chart padding for a tighter fit
+            }
+        }
+    });
+}
+
+// Iterate over the complaints and create charts for each
+document.addEventListener("DOMContentLoaded", function() {
+
+{% for complain in complains %}
+
+    createDonutChart({{ complain.confidence_score }}, 'chart-{{ forloop.counter }}');
+{% endfor %}
+});
+</script>
+
+    
+</body>
+</html>

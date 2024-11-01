@@ -1,0 +1,48 @@
+    * {
+        box-sizing: border-box;
+        font-weight: normal;
+    }
+    body {
+         background-image: url("bg.png");
+
+        background-repeat: repeat;
+        background-size: cover;
+        text-align: center;
+        font-family: "Roboto Mono";
+        padding: 1em;
+    }
+    .glass-login {
+        background-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 10px 5px 50px black;
+        padding: 4em;
+        margin-top:10%;
+        border-radius: 10px;
+        width: 600px;
+        margin: 0 auto;
+    }
+    .glass-login input {
+        border: none;
+        border-bottom: 2px solid blue;
+        background-color: rgba(255, 255, 255, 0);
+        padding: 1em; /* Added padding to input fields */
+        margin-bottom: 2em; /* Added margin bottom to input fields */
+
+    }
+    .glass-login button[type="submit"] {
+        background-color: #333;
+        color: #fff;
+        padding: 1em 2em;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-top: 2em; 
+    }
+    .glass-login button[type="submit"]:hover {
+        background-color: #444;
+    }
+    p{
+    color:#FFF;
+    }
+    a{
+    color:#fff;
+    }

@@ -1,0 +1,174 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .complaint-details {
+            margin: 20px 0;
+        }
+        .complaint-details p {
+            margin: 10px 0;
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+        .complaint-details span {
+            font-weight: bold;
+        }
+        .video-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Details</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        .container { margin-top: 20px; }
+        .complaint-details span { font-weight: bold; }
+        .image-slideshow img { max-width: 100%; max-height: 300px; }
+        .back-link { margin-top: 20px; display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Complaint Details</h1>
+        <div class="complaint-details">
+            <p><span>Category:</span> {{ complain.category }}</p>
+            <p><span>Subcategory:</span> {{ complain.subcategory }}</p>
+            <p><span>Priority:</span> {{ complain.priority }}</p>
+            <p><span>Confidence Score:</span> {{ complain.confidence_score }}</p>
+            <p><span>Additional Details:</span> {{ complain.addon }}</p>
+            <p><span>User Name:</span> {{ complain.user.username }}</p>
+            <p><span>Incident Date and Time:</span> {{ complain.incident_datetime }}</p>
+            <p><span>Incident Details:</span> {{ complain.issue_description}}</p>
+
+            <!-- National ID -->
+            {% if complain.national_id %}
+            <p><span>National ID:</span></p>
+            <img src="{{ complain.national_id.url }}" alt="National ID" class="img-fluid">
+            {% endif %}
+
+            <!-- Financial Fraud Information -->
+            {% if complain.bank_name %}
+            <h3>Financial Fraud Details</h3>
+            <p><span>Bank/Wallet/Merchant Name:</span> {{ complain.bank_name }}</p>
+            <p><span>Transaction ID/UTR No:</span> {{ complain.transaction_id }}</p>
+            <p><span>Transaction Date:</span> {{ complain.transaction_date }}</p>
+            <p><span>Fraud Amount:</span> {{ complain.fraud_amount }}</p>
+            {% endif %}
+
+            <!-- Relevant Evidence -->
+            {% if complain.evidence %}
+            <p><span>Relevant Evidence:</span></p>
+            <a href="{{ complain.evidence.url }}" download>Download Evidence</a>
+            {% endif %}
+
+            <!-- Suspect Information -->
+            {% if complain.suspect_website_urls %}
+            <h3>Suspect Details</h3>
+            <p><span>Suspected Website URLs:</span> {{ complain.suspect_website_urls }}</p>
+            {% endif %}
+            {% if complain.suspect_mobile_no %}
+            <p><span>Suspect Mobile No:</span> {{ complain.suspect_mobile_no }}</p>
+            {% endif %}
+            {% if complain.suspect_email %}
+            <p><span>Suspect Email ID:</span> {{ complain.suspect_email }}</p>
+            {% endif %}
+            {% if complain.suspect_bank_account_no %}
+            <p><span>Suspect Bank Account No:</span> {{ complain.suspect_bank_account_no }}</p>
+            {% endif %}
+            {% if complain.suspect_address %}
+            <p><span>Suspect Address:</span> {{ complain.suspect_address }}</p>
+            {% endif %}
+            {% if complain.suspect_photo %}
+            <p><span>Suspect Photo:</span></p>
+            <img src="{{ complain.suspect_photo.url }}" alt="Suspect Photo" class="img-fluid">
+            {% endif %}
+            {% if complain.suspect_other_document %}
+            <p><span>Other Document:</span></p>
+            <a href="{{ complain.suspect_other_document.url }}" download>Download Document</a>
+            {% endif %}
+        </div>
+
+        <!-- Image Slideshow -->
+        {% if complain.images.all %}
+        <div id="imageCarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                {% for image in complain.images.all %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <img src="{{ image.pic.url }}" class="d-block w-100" alt="Complain Image {{ forloop.counter }}">
+                </div>
+                {% endfor %}
+            </div>
+            <a class="carousel-control-prev" href="#imageCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#imageCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Video -->
+        {% if complain.video %}
+        <div class="video-container">
+            <h3>Uploaded Video</h3>
+            <video controls>
+                <source src="{{ complain.video.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        {% endif %}
+{% if request.user.is_superuser %}
+        <a href="{% url 'complain_list' %}" class="btn btn-primary back-link">Back to Complaint List</a>
+        {% endif %}
+    </div>
+
+    <!-- JS for Carousel -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

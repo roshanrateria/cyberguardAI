@@ -1,0 +1,23 @@
+{%load static%}
+
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Help Portal</title> <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+</head>
+<body>
+    <div class="glass-login">
+        <h1>Login</h1>
+        <form method="post" action="{% url 'login' %}">
+{%csrf_token%}
+            <input type="text" name="username" placeholder="Enter username">
+            <input type="password" name="password" placeholder="Enter password">
+            <button type="submit">Login</button>
+        </form>
+          <p>Don't Have an account? <a href="{% url 'register' %}">Register</a></p>
+    </div>
+</body>
+</html>
